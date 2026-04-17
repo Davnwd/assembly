@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DAV PUBLIC SCHOOL NAWADA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS & RESET
+═══════════════════════════════════════════ */
+:root {
+  --ink:        #0f172a;
+  --ink-soft:   #334155;
+  --ink-muted:  #64748b;
+  --paper:      #faf9f6;
+  --paper-warm: #f0ece3;
+  --paper-card: #ffffff;
+  --gold:       #b8960c;
+  --gold-light: #fef3c7;
+  --crimson:    #be123c;
+  --crimson-light: #fff1f2;
+  --teal:       #0e7490;
+  --teal-light: #ecfeff;
+  --sage:       #4a7c59;
+  --sage-light: #f0fdf4;
+  --border:     rgba(15,23,42,0.10);
+  --shadow-sm:  0 1px 3px rgba(15,23,42,0.08);
+  --shadow-md:  0 4px 16px rgba(15,23,42,0.10);
+  --shadow-lg:  0 12px 40px rgba(15,23,42,0.14);
+  --radius:     14px;
+  --radius-sm:  8px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Ccircle cx='1' cy='1' r='0.6' fill='rgba(15,23,42,0.025)'/%3E%3C/svg%3E");
+}
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--paper-warm); }
+::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+input, textarea, select, button { font-family: inherit; }
+button { cursor: pointer; border: none; background: none; }
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════ */
+@keyframes fadeUp   { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+@keyframes shimmer  { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+@keyframes spin     { to { transform:rotate(360deg); } }
+@keyframes toastIn  { from{opacity:0;transform:translateY(30px) scale(.95)} to{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes toastOut { from{opacity:1;transform:translateY(0) scale(1)} to{opacity:0;transform:translateY(30px) scale(.95)} }
+@keyframes pulse    { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+.fade-up  { animation: fadeUp  .5s ease both; }
+.fade-in  { animation: fadeIn  .35s ease both; }
+.d1 { animation-delay:.05s } .d2 { animation-delay:.12s }
+.d3 { animation-delay:.19s } .d4 { animation-delay:.26s }
+.d5 { animation-delay:.33s }
+
+/* ═══════════════════════════════════════════
+   LAYOUT UTILITIES
+═══════════════════════════════════════════ */
+.page   { position:absolute; inset:0; overflow-y:auto; display:none; flex-direction:column; }
+.page.active { display:flex; }
+.container { max-width:680px; margin:0 auto; padding:0 16px; width:100%; }
+.container-md { max-width:860px; margin:0 auto; padding:0 16px; width:100%; }
+
+/* ═══════════════════════════════════════════
+   MASTHEAD
+═══════════════════════════════════════════ */
+.masthead {
+  background: var(--paper);
+  border-bottom: 1px solid var(--ink);
+  position: relative;
+  z-index: 10;
+}
+.masthead-bar { height: 5px; background: var(--ink); }
+.masthead-gold { height: 2px; background: var(--gold); }
+.masthead-inner { padding: 16px; }
+.masthead-top {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px;
+}
+.masthead-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.masthead-actions { display:flex; align-items:center; gap:12px; }
+.masthead-user {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--ink-muted);
+  display:flex; align-items:center; gap:5px;
+}
+.btn-signout {
+  font-size: 11px; font-weight: 600; color: var(--ink-muted);
+  display:flex; align-items:center; gap:4px;
+  transition: color .2s;
+}
+.btn-signout:hover { color: var(--crimson); }
+.rule-double { border:none; border-top:3px double var(--ink); margin:6px 0 3px; }
+.rule-single { border:none; border-top:1px solid var(--ink); margin:3px 0; }
+.masthead-title {
+  text-align:center; padding:10px 0;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.masthead-title h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 6vw, 48px);
+  font-weight: 900; letter-spacing: -.02em; color: var(--ink);
+}
+.bell-icon { color: var(--gold); font-size: 18px; }
+.masthead-subtitle {
+  text-align:center; margin-top:2px;
+  font-family:'DM Mono',monospace; font-size:9px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-muted);
+}
+
+/* ═══════════════════════════════════════════
+   CARDS
+═══════════════════════════════════════════ */
+.card {
+  background: var(--paper-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.card-header {
+  padding: 14px 18px 0;
+  display: flex; align-items: center; gap: 8px;
+}
+.card-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: .15em; text-transform: uppercase;
+  font-weight: 500; color: var(--ink-muted);
+}
+.card-body { padding: 12px 18px 18px; }
+
+/* accent top borders */
+.card-gold    { border-top: 4px solid var(--gold); }
+.card-crimson { border-top: 4px solid var(--crimson); }
+.card-teal    { border-top: 4px solid var(--teal); }
+.card-sage    { border-top: 4px solid var(--sage); }
+.card-ink     { border-top: 4px solid var(--ink); }
+
+.icon-gold    { color: var(--gold); }
+.icon-crimson { color: var(--crimson); }
+.icon-teal    { color: var(--teal); }
+.icon-sage    { color: var(--sage); }
+
+/* quote card */
+.quote-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(17px, 3.5vw, 22px);
+  font-style: italic; line-height: 1.5;
+  color: var(--ink);
+  border-left: 4px solid var(--gold);
+  padding-left: 14px; margin-bottom: 10px;
+}
+.quote-author {
+  text-align: right;
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  color: var(--ink-muted);
+}
+
+/* news list */
+.news-list { list-style: none; display:flex; flex-direction:column; gap:8px; }
+.news-item { display:flex; align-items:flex-start; gap:8px; font-size:14px; line-height:1.45; }
+.news-dot { width:7px; height:7px; border-radius:50%; background:var(--crimson); flex-shrink:0; margin-top:5px; }
+
+/* thought */
+.thought-text { font-size:15px; line-height:1.65; color:var(--ink); }
+
+/* current affairs */
+.affairs-text { font-size:14px; line-height:1.7; color:var(--ink); white-space:pre-line; }
+
+/* skeleton */
+.skeleton {
+  background: linear-gradient(90deg,#e8e3db 25%,#f0ece4 50%,#e8e3db 75%);
+  background-size:200% 100%; border-radius:4px;
+  animation: shimmer 1.4s infinite;
+}
+.skel-card { padding:18px; display:flex; flex-direction:column; gap:10px; }
+.skel-h   { height:12px; }
+.skel-l   { height:14px; }
+.skel-m   { width:80%; }
+.skel-s   { width:60%; }
+
+/* ═══════════════════════════════════════════
+   GK QUIZ
+═══════════════════════════════════════════ */
+.quiz-questions { display:flex; flex-direction:column; gap:20px; }
+.quiz-q-text { font-size:14px; font-weight:600; margin-bottom:10px; line-height:1.4; }
+.quiz-q-num  { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-muted); margin-bottom:4px; }
+.quiz-options { display:flex; flex-direction:column; gap:6px; }
+.quiz-opt {
+  display:flex; align-items:center; gap:8px;
+  padding:9px 13px; border:1.5px solid var(--border);
+  border-radius: var(--radius-sm); cursor:pointer;
+  font-size:13px; color:var(--ink); transition:all .16s ease;
+  background: var(--paper);
+  text-align:left; width:100%;
+}
+.quiz-opt:hover:not(:disabled) { border-color:var(--gold); background:var(--gold-light); }
+.quiz-opt.correct { background:var(--sage-light); border-color:var(--sage); }
+.quiz-opt.wrong   { background:var(--crimson-light); border-color:var(--crimson); }
+.quiz-opt-letter  { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-muted); flex-shrink:0; }
+.quiz-explanation {
+  margin-top:8px; font-size:12px; color:var(--ink-muted);
+  background:var(--paper-warm); padding:8px 12px; border-radius:6px;
+}
+.quiz-score {
+  text-align:center; padding:16px; background:var(--paper-warm);
+  border-radius:var(--radius); margin-top:8px;
+}
+.quiz-score-num { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; }
+.quiz-score-msg { font-family:'DM Mono',monospace; font-size:11px; color:var(--ink-muted); margin-top:4px; }
+
+/* ═══════════════════════════════════════════
+   SHOW MORE BUTTON
+═══════════════════════════════════════════ */
+.btn-more {
+  margin-top:10px; font-size:11px; font-family:'DM Mono',monospace;
+  color:var(--crimson); display:flex; align-items:center; gap:4px;
+  transition:opacity .15s;
+}
+.btn-more:hover { opacity:.7; }
+
+/* ═══════════════════════════════════════════
+   LOGIN PAGE
+═══════════════════════════════════════════ */
+#page-login {
+  min-height: 100vh;
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.login-bg-ring1 {
+  position:fixed; top:-60px; right:-60px;
+  width:220px; height:220px; border-radius:50%;
+  border:40px solid var(--paper-warm); pointer-events:none; z-index:0;
+}
+.login-bg-ring2 {
+  position:fixed; bottom:-40px; left:-40px;
+  width:160px; height:160px; border-radius:50%;
+  border:30px solid var(--paper-warm); pointer-events:none; z-index:0;
+}
+.login-wrap { position:relative; z-index:1; width:100%; max-width:360px; }
+.login-masthead {
+  text-align:center; margin-bottom:28px;
+}
+.login-title {
+  font-family:'Playfair Display',serif; font-size:38px; font-weight:900;
+  color:var(--ink); display:flex; align-items:center; justify-content:center; gap:10px;
+  margin-bottom:6px;
+}
+.login-tagline { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-muted); }
+.login-card { background:white; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-lg); }
+.tab-bar { display:flex; border-bottom:1px solid var(--border); }
+.tab-btn {
+  flex:1; padding:13px; font-size:13px; font-weight:600;
+  transition:all .2s; color:var(--ink-muted);
+}
+.tab-btn.active { background:var(--ink); color:white; }
+.tab-btn:not(.active):hover { background:var(--paper-warm); }
+.login-form { padding:22px; display:flex; flex-direction:column; gap:14px; }
+.form-group { display:flex; flex-direction:column; gap:6px; }
+.form-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-muted); font-weight:500; }
+.form-input {
+  padding:10px 14px; border:1.5px solid #e2e8f0; border-radius:var(--radius-sm);
+  font-size:13px; background:var(--paper); color:var(--ink);
+  transition:border-color .2s, box-shadow .2s; outline:none;
+  width:100%;
+}
+.form-input:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(14,116,144,.12); }
+.pass-wrap { position:relative; }
+.pass-wrap .form-input { padding-right:40px; }
+.btn-eye {
+  position:absolute; right:12px; top:50%; transform:translateY(-50%);
+  color:#94a3b8; transition:color .15s; font-size:15px;
+}
+.btn-eye:hover { color:var(--ink); }
+.alert { font-size:12px; padding:9px 12px; border-radius:var(--radius-sm); display:none; }
+.alert.show { display:block; animation:fadeIn .25s ease; }
+.alert-error   { background:#fef2f2; border:1px solid #fecaca; color:#dc2626; }
+.alert-info    { background:#eff6ff; border:1px solid #bfdbfe; color:#1d4ed8; }
+.alert-warning { background:#fffbeb; border:1px solid #fde68a; color:#92400e; }
+.btn-primary {
+  padding:12px; background:var(--ink); color:white; border-radius:var(--radius-sm);
+  font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:7px;
+  transition:all .2s; width:100%;
+}
+.btn-primary:hover:not(:disabled) { background:var(--ink-soft); }
+.btn-primary:active:not(:disabled) { transform:scale(.98); }
+.btn-primary:disabled { opacity:.55; cursor:not-allowed; }
+.login-footer { text-align:center; margin-top:16px; font-family:'DM Mono',monospace; font-size:9px; color:var(--ink-muted); }
+/* registration-only extra fields */
+.reg-only { display:none; }
+.reg-only.show { display:contents; }
+.form-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+@media(max-width:380px) { .form-row-2 { grid-template-columns:1fr; } }
+/* extra student detail chips in user management */
+.user-detail { font-family:'DM Mono',monospace; font-size:9px; color:var(--ink-muted); margin-top:2px; display:flex; flex-wrap:wrap; gap:6px; }
+.user-chip { background:var(--paper-warm); border:1px solid var(--border); border-radius:20px; padding:2px 8px; }
+
+/* ═══════════════════════════════════════════
+   STUDENT DASHBOARD
+═══════════════════════════════════════════ */
+.student-main { padding:20px 0 60px; flex:1; position:relative; z-index:1; }
+.date-controls {
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:10px; margin-bottom:18px;
+}
+.date-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--teal); display:flex; align-items:center; gap:6px; }
+.date-actions { display:flex; align-items:center; gap:8px; }
+.date-input {
+  padding:7px 12px; border:1.5px solid #e2e8f0; border-radius:var(--radius-sm);
+  font-family:'DM Mono',monospace; font-size:12px; background:white; color:var(--ink);
+  outline:none; transition:border-color .2s;
+}
+.date-input:focus { border-color:var(--teal); }
+.btn-today {
+  padding:7px 12px; border:1.5px solid var(--teal); color:var(--teal);
+  border-radius:var(--radius-sm); font-size:11px; font-weight:600;
+  transition:all .18s;
+}
+.btn-today:hover { background:var(--teal); color:white; }
+.btn-refresh {
+  width:32px; height:32px; border:1.5px solid #e2e8f0; border-radius:var(--radius-sm);
+  display:flex; align-items:center; justify-content:center; color:var(--ink-muted);
+  transition:all .15s;
+}
+.btn-refresh:hover { background:var(--paper-warm); }
+.btn-refresh svg { transition:transform .5s; }
+.btn-refresh.spinning svg { animation:spin .7s linear infinite; }
+.date-headline { text-align:center; margin-bottom:20px; }
+.date-headline p { font-family:'Playfair Display',serif; font-size:17px; color:var(--ink-muted); }
+.date-divider { border:none; border-top:1px solid var(--border); margin-top:10px; }
+.cards-stack { display:flex; flex-direction:column; gap:14px; }
+.empty-state { text-align:center; padding:60px 20px; color:var(--ink-muted); }
+.empty-state svg { margin-bottom:14px; opacity:.3; }
+.empty-state h3 { font-family:'Playfair Display',serif; font-size:20px; margin-bottom:6px; }
+.empty-state p  { font-size:13px; }
+
+/* ═══════════════════════════════════════════
+   ADMIN DASHBOARD
+═══════════════════════════════════════════ */
+.admin-main { padding:20px 0 80px; flex:1; position:relative; z-index:1; }
+.tab-panel  { display:none; }
+.tab-panel.active { display:block; animation:fadeIn .3s ease; }
+.seg-bar {
+  display:flex; gap:4px; background:var(--paper-warm); padding:4px;
+  border-radius:12px; border:1px solid var(--border); margin-bottom:20px;
+}
+.seg-btn {
+  flex:1; padding:8px 12px; border-radius:9px;
+  font-size:12px; font-weight:600; color:var(--ink-muted);
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  transition:all .2s;
+}
+.seg-btn.active { background:var(--ink); color:white; box-shadow:var(--shadow-sm); }
+.seg-btn:not(.active):hover { color:var(--ink); }
+
+/* admin form sections */
+.form-section {
+  background:white; border:1px solid var(--border); border-radius:var(--radius);
+  overflow:hidden; margin-bottom:14px; box-shadow:var(--shadow-sm);
+}
+.form-section-header {
+  padding:14px 18px; display:flex; align-items:center; justify-content:space-between;
+  cursor:pointer; user-select:none;
+}
+.form-section-header-left { display:flex; align-items:center; gap:8px; }
+.form-section-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-muted); font-weight:500; }
+.form-section-body { padding:0 18px 18px; display:flex; flex-direction:column; gap:12px; }
+.form-section-body.collapsed { display:none; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+@media(max-width:480px) { .form-row { grid-template-columns:1fr; } }
+.admin-input {
+  padding:10px 14px; border:1.5px solid #e2e8f0; border-radius:var(--radius-sm);
+  font-size:13px; background:var(--paper); color:var(--ink); outline:none;
+  transition:border-color .2s, box-shadow .2s; width:100%;
+  resize:none;
+}
+.admin-input:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(14,116,144,.1); }
+.admin-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-muted); font-weight:500; margin-bottom:5px; display:block; }
+.required-star { color:var(--crimson); }
+.edit-badge {
+  font-family:'DM Mono',monospace; font-size:9px; padding:3px 8px;
+  background:#fef3c7; color:#92400e; border-radius:20px; border:1px solid #fde68a;
+  display:none;
+}
+.edit-badge.show { display:inline-flex; align-items:center; gap:4px; }
+.btn-check {
+  padding:10px 14px; border:1.5px solid var(--teal); color:var(--teal);
+  border-radius:var(--radius-sm); font-size:12px; font-weight:600;
+  display:flex; align-items:center; gap:6px; white-space:nowrap;
+  transition:all .18s;
+}
+.btn-check:hover:not(:disabled) { background:var(--teal); color:white; }
+.btn-check:disabled { opacity:.5; cursor:not-allowed; }
+.date-row { display:flex; gap:8px; align-items:flex-end; }
+.date-row .admin-group { flex:1; }
+
+/* quiz builder */
+.quiz-item {
+  background:var(--paper-warm); border-radius:10px; padding:14px;
+  display:flex; flex-direction:column; gap:10px; position:relative;
+}
+.quiz-item-header { display:flex; align-items:center; justify-content:space-between; }
+.quiz-num { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-muted); }
+.btn-remove-q { color:var(--crimson); opacity:.6; transition:opacity .15s; font-size:13px; display:flex; align-items:center; }
+.btn-remove-q:hover { opacity:1; }
+.quiz-opts-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+@media(max-width:420px) { .quiz-opts-grid { grid-template-columns:1fr; } }
+.quiz-opt-wrap { display:flex; align-items:center; gap:6px; }
+.quiz-opt-wrap input[type=radio] { accent-color:var(--sage); flex-shrink:0; }
+.btn-add-q {
+  width:100%; padding:11px; border:2px dashed #cbd5e1; border-radius:10px;
+  color:var(--ink-muted); font-size:12px; font-weight:600;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  transition:all .18s; margin-top:6px;
+}
+.btn-add-q:hover { border-color:var(--teal); color:var(--teal); }
+.btn-submit {
+  width:100%; padding:14px; background:var(--ink); color:white;
+  border-radius:var(--radius-sm); font-size:14px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:all .2s; box-shadow:var(--shadow-md);
+}
+.btn-submit:hover:not(:disabled) { background:var(--ink-soft); }
+.btn-submit:active:not(:disabled) { transform:scale(.99); }
+.btn-submit:disabled { opacity:.55; cursor:not-allowed; }
+
+/* user management */
+.user-list { display:flex; flex-direction:column; gap:8px; }
+.user-item {
+  background:white; border:1px solid var(--border); border-radius:var(--radius);
+  padding:12px 16px; display:flex; align-items:center; gap:10px;
+  box-shadow:var(--shadow-sm);
+}
+.user-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.user-dot.active   { background:#22c55e; }
+.user-dot.inactive { background:#cbd5e1; }
+.user-info { flex:1; min-width:0; }
+.user-name { font-weight:600; font-size:13px; }
+.user-role { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-muted); }
+.btn-activate {
+  padding:6px 12px; border-radius:var(--radius-sm); font-size:11px; font-weight:600;
+  border:1.5px solid; transition:all .15s;
+}
+.btn-activate.activate   { border-color:#86efac; color:var(--sage); }
+.btn-activate.activate:hover { background:var(--sage-light); }
+.btn-activate.deactivate { border-color:#fca5a5; color:var(--crimson); }
+.btn-activate.deactivate:hover { background:var(--crimson-light); }
+.badge-admin {
+  font-family:'DM Mono',monospace; font-size:9px; padding:3px 8px;
+  background:var(--gold-light); color:#92400e; border:1px solid #fde68a; border-radius:20px;
+}
+.user-mgmt-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.btn-refresh-users {
+  padding:6px 12px; border:1.5px solid var(--teal); color:var(--teal);
+  border-radius:var(--radius-sm); font-size:11px; font-weight:600;
+  display:flex; align-items:center; gap:5px; transition:all .15s;
+}
+.btn-refresh-users:hover { background:var(--teal); color:white; }
+
+/* spinner */
+.spinner {
+  width:18px; height:18px; border:2px solid rgba(255,255,255,.3);
+  border-top-color:white; border-radius:50%; display:inline-block;
+  animation:spin .7s linear infinite;
+}
+.spinner-dark {
+  border-color:rgba(15,23,42,.15); border-top-color:var(--ink);
+}
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+#toast-container {
+  position:fixed; bottom:20px; right:16px; z-index:9999;
+  display:flex; flex-direction:column; gap:8px; pointer-events:none;
+}
+.toast {
+  pointer-events:all;
+  display:flex; align-items:flex-start; gap:10px;
+  padding:12px 14px; background:white; border-radius:10px;
+  box-shadow:var(--shadow-lg); max-width:300px; min-width:220px;
+  border-left:4px solid;
+  animation:toastIn .3s cubic-bezier(.34,1.56,.64,1) both;
+}
+.toast.exit { animation:toastOut .25s ease both; }
+.toast-success { border-color:#22c55e; }
+.toast-error   { border-color:var(--crimson); }
+.toast-info    { border-color:var(--teal); }
+.toast-icon    { font-size:15px; flex-shrink:0; margin-top:1px; }
+.toast-msg     { font-size:12px; line-height:1.45; color:var(--ink); flex:1; }
+.toast-close   { color:#94a3b8; font-size:13px; flex-shrink:0; transition:color .15s; background:none; border:none; cursor:pointer; }
+.toast-close:hover { color:var(--ink); }
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+.page-footer { text-align:center; padding:24px 16px; border-top:1px solid var(--border); margin-top:auto; }
+.page-footer hr { border:none; border-top:3px double var(--ink); max-width:120px; margin:0 auto 8px; }
+.page-footer p  { font-family:'DM Mono',monospace; font-size:9px; color:var(--ink-muted); letter-spacing:.1em; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:500px) {
+  .masthead-title h1 { font-size:26px; }
+  .masthead-user { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ TOAST CONTAINER ═══════ -->
+<div id="toast-container"></div>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE: LOGIN
+════════════════════════════════════════════════════ -->
+<div class="page active" id="page-login">
+  <div class="login-bg-ring1"></div>
+  <div class="login-bg-ring2"></div>
+  <div class="login-wrap fade-up">
+    <div class="login-masthead">
+      <div class="login-title">
+        <span>🔔</span>
+        <span>DAV PS NAWADA</span>
+        <span>🔔</span>
+      </div>
+      <hr class="rule-double" style="max-width:200px;margin:8px auto 4px;">
+      <p class="login-tagline">Daily School Assembly Portal</p>
+      <hr class="rule-single" style="max-width:200px;margin:4px auto 0;">
+    </div>
+
+    <div class="login-card">
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tab-login-btn" onclick="switchAuthTab('login')">Sign In</button>
+        <button class="tab-btn" id="tab-register-btn" onclick="switchAuthTab('register')">Register</button>
+      </div>
+
+      <div class="login-form">
+        <!-- register notice -->
+        <div class="alert alert-warning" id="register-notice">
+          ⚠️ New accounts require admin approval before login.
+        </div>
+        <!-- error / info -->
+        <div class="alert alert-error" id="auth-error"></div>
+        <div class="alert alert-info"  id="auth-info"></div>
+
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input class="form-input" id="inp-username" type="text" placeholder="Enter username" autocomplete="username"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="pass-wrap">
+            <input class="form-input" id="inp-password" type="password" placeholder="Enter password" autocomplete="current-password"/>
+            <button class="btn-eye" onclick="togglePass()" id="btn-eye-toggle" type="button">👁</button>
+          </div>
+        </div>
+
+        <!-- ── Registration-only fields ── -->
+        <div class="reg-only" id="reg-extra-fields">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Class <span style="color:var(--crimson)">*</span></label>
+              <input class="form-input" id="inp-class" type="text" placeholder="e.g. 10-A"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Roll No. <span style="color:var(--crimson)">*</span></label>
+              <input class="form-input" id="inp-roll" type="text" placeholder="e.g. 23"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Number <span style="color:var(--crimson)">*</span></label>
+            <input class="form-input" id="inp-contact" type="tel" placeholder="Parent / student mobile number"/>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="btn-auth-submit" onclick="handleAuth()">
+          <span id="btn-auth-icon">🔑</span>
+          <span id="btn-auth-label">Sign In</span>
+        </button>
+      </div>
+    </div>
+
+    <p class="login-footer">Student Project Works on AI</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE: STUDENT DASHBOARD
+════════════════════════════════════════════════════ -->
+<div class="page" id="page-student">
+  <!-- masthead -->
+  <div class="masthead">
+    <div class="masthead-bar"></div>
+    <div class="masthead-gold"></div>
+    <div class="masthead-inner container">
+      <div class="masthead-top">
+        <span class="masthead-date" id="student-date-label"></span>
+        <div class="masthead-actions">
+          <span class="masthead-user" id="student-user-label"></span>
+          <button class="btn-signout" onclick="signOut()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign out
+          </button>
+        </div>
+      </div>
+      <hr class="rule-double"/>
+      <hr class="rule-single"/>
+      <div class="masthead-title">
+        <span class="bell-icon">🔔</span>
+        <h1>D.A.V Public School, VIP COLONY, Nawada</h1>
+        <span class="bell-icon">🔔</span>
+      </div>
+      <p class="masthead-subtitle">Student Portal · Daily Bulletin</p>
+      <hr class="rule-single"/>
+      <hr class="rule-double"/>
+    </div>
+  </div>
+
+  <!-- main content -->
+  <div class="student-main">
+    <div class="container">
+      <!-- date controls -->
+      <div class="date-controls">
+        <div class="date-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="student-edition-label">Today's Edition</span>
+        </div>
+        <div class="date-actions">
+          <input class="date-input" type="date" id="student-date-picker" onchange="studentLoadDate(this.value)"/>
+          <button class="btn-today" id="btn-back-today" onclick="studentGoToday()" style="display:none">Today</button>
+          <button class="btn-refresh" id="btn-student-refresh" onclick="studentRefresh()" title="Refresh">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- date headline -->
+      <div class="date-headline">
+        <p id="student-date-headline"></p>
+        <hr class="date-divider"/>
+      </div>
+
+      <!-- content area -->
+      <div id="student-content">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </div>
+
+  <footer class="page-footer">
+    <hr/>
+    <p>DAV PUBLIC SCHOOL NAWADA · <span id="student-footer-year"></span></p>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE: ADMIN DASHBOARD
+════════════════════════════════════════════════════ -->
+<div class="page" id="page-admin">
+  <!-- masthead -->
+  <div class="masthead">
+    <div class="masthead-bar"></div>
+    <div class="masthead-gold"></div>
+    <div class="masthead-inner container-md">
+      <div class="masthead-top">
+        <span class="masthead-date" id="admin-date-label"></span>
+        <div class="masthead-actions">
+          <span class="masthead-user" id="admin-user-label"></span>
+          <button class="btn-signout" onclick="signOut()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign out
+          </button>
+        </div>
+      </div>
+      <hr class="rule-double"/>
+      <hr class="rule-single"/>
+      <div class="masthead-title">
+        <span class="bell-icon">🔔</span>
+        <h1>DAV PUBLIC SCHOOL NAWADA</h1>
+        <span class="bell-icon">🔔</span>
+      </div>
+      <p class="masthead-subtitle">Admin Panel · Content Management</p>
+      <hr class="rule-single"/>
+      <hr class="rule-double"/>
+    </div>
+  </div>
+
+  <div class="admin-main">
+    <div class="container-md">
+      <!-- segment control -->
+      <div class="seg-bar">
+        <button class="seg-btn active" id="seg-entry" onclick="switchAdminTab('entry')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Data Entry
+        </button>
+        <button class="seg-btn" id="seg-users" onclick="switchAdminTab('users')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          User Management
+        </button>
+      </div>
+
+      <!-- ── DATA ENTRY TAB ── -->
+      <div class="tab-panel active" id="panel-entry">
+
+        <!-- Date -->
+        <div class="form-section">
+          <div class="form-section-header" onclick="toggleSection(this)">
+            <div class="form-section-header-left">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span class="form-section-label">Assembly Date</span>
+              <span class="edit-badge" id="edit-badge">✏️ Edit Mode</span>
+            </div>
+            <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+          </div>
+          <div class="form-section-body">
+            <div class="date-row">
+              <div class="admin-group">
+                <label class="admin-label">Date <span class="required-star">*</span></label>
+                <input class="admin-input" type="date" id="admin-date" onchange="adminDateChanged()"/>
+              </div>
+              <button class="btn-check" id="btn-date-check" onclick="adminCheckDate()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.18-5"/></svg>
+                Check Date
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quote -->
+        <div class="form-section">
+          <div class="form-section-header" onclick="toggleSection(this)">
+            <div class="form-section-header-left">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
+              <span class="form-section-label">Quote of the Day</span>
+            </div>
+            <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+          </div>
+          <div class="form-section-body">
+            <div>
+              <label class="admin-label">Quote <span class="required-star">*</span></label>
+              <textarea class="admin-input" id="admin-quote" rows="2" placeholder="Enter an inspiring quote…"></textarea>
+            </div>
+            <div>
+              <label class="admin-label">Author</label>
+              <input class="admin-input" type="text" id="admin-author" placeholder="e.g. Swami Vivekananda"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thought -->
+        <div class="form-section">
+          <div class="form-section-header" onclick="toggleSection(this)">
+            <div class="form-section-header-left">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--sage)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span class="form-section-label">Thought for the Day</span>
+            </div>
+            <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+          </div>
+          <div class="form-section-body">
+            <div>
+              <label class="admin-label">Thought <span class="required-star">*</span></label>
+              <textarea class="admin-input" id="admin-thought" rows="3" placeholder="Enter today's thought…"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- News -->
+        <div class="form-section">
+          <div class="form-section-header" onclick="toggleSection(this)">
+            <div class="form-section-header-left">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--crimson)" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+              <span class="form-section-label">News Headlines</span>
+            </div>
+            <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+          </div>
+          <div class="form-section-body">
+            <div>
+              <label class="admin-label">Headlines (one per line)</label>
+              <textarea class="admin-input" id="admin-news" rows="4" placeholder="India launches new space mission&#10;Budget session begins in Parliament&#10;…"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Current Affairs -->
+        <div class="form-section">
+          <div class="form-section-header" onclick="toggleSection(this)">
+            <div class="form-section-header-left">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              <span class="form-section-label">Current Affairs</span>
+            </div>
+            <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+          </div>
+          <div class="form-section-body">
+            <div>
+              <label class="admin-label">Current Affairs Summary</label>
+              <textarea class="admin-input" id="admin-affairs" rows="4" placeholder="Today's key current affairs summary…"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- GK Quiz -->
+        <div class="form-section">
+          <div class="form-section-header" onclick="toggleSection(this)">
+            <div class="form-section-header-left">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span class="form-section-label">GK Quiz</span>
+              <span id="quiz-count-badge" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--ink-muted);margin-left:4px;">(1 Q)</span>
+            </div>
+            <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+          </div>
+          <div class="form-section-body" id="quiz-builder">
+            <!-- questions injected by JS -->
+          </div>
+        </div>
+
+        <!-- error -->
+        <div class="alert alert-error" id="admin-form-error" style="margin-bottom:12px;"></div>
+
+        <!-- submit -->
+        <button class="btn-submit" id="btn-admin-submit" onclick="adminSubmit()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span id="btn-submit-label">Publish to Google Sheets</span>
+        </button>
+      </div>
+
+      <!-- ── USERS TAB ── -->
+      <div class="tab-panel" id="panel-users">
+        <div class="user-mgmt-header">
+          <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);display:flex;align-items:center;gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Registered Users
+          </span>
+          <button class="btn-refresh-users" onclick="loadUsers()">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.18-5"/></svg>
+            Refresh
+          </button>
+        </div>
+        <div id="user-list-container">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="page-footer">
+    <hr/>
+    <p>Morning Assembly Portal · Admin · <span id="admin-footer-year"></span></p>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════ -->
+<script>
+// ══════════════════════════════════════════════════
+//  CONFIG — Replace with your Apps Script Web App URL
+// ══════════════════════════════════════════════════
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxo6ifOKDoNyC3gSxWvF6bnwXtb5mIaU_RIMPmlCvK1uGhHTINomaR30PFVezfHGKje/exec";
+
+// ══════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════
+let currentUser  = JSON.parse(sessionStorage.getItem("asm_user") || "null");
+let authMode     = "login";   // "login" | "register"
+let adminEditMode = false;
+let quizQuestions = [{ question:"", options:["","","",""], correct:0, explanation:"" }];
+let quizAnswers  = {};       // student quiz answers
+let studentCurrentData = null;
+
+// ══════════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════════
+const todayISO = () => new Date().toISOString().slice(0,10);
+const fmtDate  = iso =>
+  new Date(iso + "T00:00:00").toLocaleDateString("en-IN",
+    { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+
+async function apiFetch(params) {
+  const url = GAS_URL + "?" + new URLSearchParams(params);
+  const r = await fetch(url);
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  const j = await r.json();
+  if (j.status === "error") throw new Error(j.message || "API error");
+  return j;
+}
+async function apiPost(body) {
+  const r = await fetch(GAS_URL, {
+    method:"POST",
+    headers:{"Content-Type":"text/plain"},
+    body: JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  const j = await r.json();
+  if (j.status === "error") throw new Error(j.message || "API error");
+  return j;
+}
+
+// ══════════════════════════════════════════════════
+//  ROUTING
+// ══════════════════════════════════════════════════
+function showPage(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+function signOut() {
+  currentUser = null;
+  sessionStorage.removeItem("asm_user");
+  showPage("page-login");
+  toast("Signed out successfully.", "info");
+}
+
+// ══════════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════════
+function toast(msg, type="info", dur=3600) {
+  const icons = { success:"✅", error:"❌", info:"ℹ️" };
+  const c = document.getElementById("toast-container");
+  const el = document.createElement("div");
+  el.className = `toast toast-${type}`;
+  el.innerHTML = `
+    <span class="toast-icon">${icons[type]||"ℹ️"}</span>
+    <span class="toast-msg">${msg}</span>
+    <button class="toast-close" onclick="removeToast(this.parentElement)">✕</button>`;
+  c.appendChild(el);
+  setTimeout(() => removeToast(el), dur);
+}
+function removeToast(el) {
+  if (!el || !el.parentElement) return;
+  el.classList.add("exit");
+  setTimeout(() => el.remove(), 260);
+}
+
+// ══════════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════════
+function switchAuthTab(mode) {
+  authMode = mode;
+  document.getElementById("tab-login-btn").classList.toggle("active", mode==="login");
+  document.getElementById("tab-register-btn").classList.toggle("active", mode==="register");
+  document.getElementById("register-notice").classList.toggle("show", mode==="register");
+  document.getElementById("reg-extra-fields").classList.toggle("show", mode==="register");
+  document.getElementById("btn-auth-icon").textContent  = mode==="login" ? "🔑" : "👤";
+  document.getElementById("btn-auth-label").textContent = mode==="login" ? "Sign In" : "Create Account";
+  document.getElementById("auth-error").classList.remove("show");
+  document.getElementById("auth-info").classList.remove("show");
+  // clear reg fields when switching back to login
+  if (mode === "login") {
+    ["inp-class","inp-roll","inp-contact"].forEach(id => {
+      const el = document.getElementById(id); if(el) el.value = "";
+    });
+  }
+}
+
+function togglePass() {
+  const inp = document.getElementById("inp-password");
+  inp.type = inp.type === "password" ? "text" : "password";
+}
+
+async function handleAuth() {
+  const u = document.getElementById("inp-username").value.trim();
+  const p = document.getElementById("inp-password").value.trim();
+  const errEl  = document.getElementById("auth-error");
+  const infoEl = document.getElementById("auth-info");
+  errEl.classList.remove("show"); infoEl.classList.remove("show");
+
+  if (!u || !p) { errEl.textContent="Please fill in all fields."; errEl.classList.add("show"); return; }
+
+  // Extra fields only needed for registration
+  let cls = "", roll = "", contact = "";
+  if (authMode === "register") {
+    cls     = document.getElementById("inp-class").value.trim();
+    roll    = document.getElementById("inp-roll").value.trim();
+    contact = document.getElementById("inp-contact").value.trim();
+    if (!cls || !roll || !contact) {
+      errEl.textContent = "Class, Roll No., and Contact Number are required for registration.";
+      errEl.classList.add("show"); return;
+    }
+    if (!/^[0-9+\-\s]{7,15}$/.test(contact)) {
+      errEl.textContent = "Please enter a valid contact number.";
+      errEl.classList.add("show"); return;
+    }
+  }
+
+  const btn = document.getElementById("btn-auth-submit");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>';
+
+  try {
+    if (authMode === "login") {
+      const d = await apiFetch({ action:"login", username:u, password:p });
+      if (d.status === "ok") {
+        if (!d.active) {
+          errEl.textContent = "Your account is pending activation by the admin.";
+          errEl.classList.add("show"); return;
+        }
+        currentUser = { username: d.username, role: d.role };
+        sessionStorage.setItem("asm_user", JSON.stringify(currentUser));
+        toast(`Welcome back, ${d.username}!`, "success");
+        if (d.role === "Admin") initAdmin();
+        else initStudent();
+      } else {
+        errEl.textContent = d.message || "Invalid credentials.";
+        errEl.classList.add("show");
+      }
+    } else {
+      const d = await apiPost({ action:"register", username:u, password:p, class:cls, rollNo:roll, contact:contact });
+      if (d.status === "ok") {
+        toast("Account created! Awaiting admin activation.", "info", 5000);
+        infoEl.textContent = "✅ Registered! Please wait for admin to activate your account.";
+        infoEl.classList.add("show");
+        switchAuthTab("login");
+        document.getElementById("inp-password").value = "";
+        ["inp-class","inp-roll","inp-contact"].forEach(id => {
+          const el = document.getElementById(id); if(el) el.value = "";
+        });
+      } else {
+        errEl.textContent = d.message || "Registration failed.";
+        errEl.classList.add("show");
+      }
+    }
+  } catch(e) {
+    errEl.textContent = "Connection error — check the API URL.";
+    errEl.classList.add("show");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<span id="btn-auth-icon">${authMode==="login"?"🔑":"👤"}</span>
+                     <span id="btn-auth-label">${authMode==="login"?"Sign In":"Create Account"}</span>`;
+  }
+}
+
+// Enter key support on login
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && document.getElementById("page-login").classList.contains("active")) {
+    handleAuth();
+  }
+});
+
+// ══════════════════════════════════════════════════
+//  STUDENT DASHBOARD
+// ══════════════════════════════════════════════════
+function initStudent() {
+  showPage("page-student");
+  const today = todayISO();
+  document.getElementById("student-date-label").textContent = fmtDate(today).split(",")[0] + ", " + fmtDate(today).split(",").slice(1).join(",");
+  document.getElementById("student-user-label").innerHTML = `👤 ${currentUser.username}`;
+  document.getElementById("student-date-picker").value = today;
+  document.getElementById("student-date-picker").max   = today;
+  document.getElementById("student-footer-year").textContent = new Date().getFullYear();
+  studentLoadDate(today);
+}
+
+function studentGoToday() {
+  const today = todayISO();
+  document.getElementById("student-date-picker").value = today;
+  document.getElementById("btn-back-today").style.display = "none";
+  document.getElementById("student-edition-label").textContent = "Today's Edition";
+  studentLoadDate(today);
+}
+
+function studentRefresh() {
+  studentLoadDate(document.getElementById("student-date-picker").value);
+}
+
+async function studentLoadDate(date) {
+  quizAnswers = {};
+  const refreshBtn = document.getElementById("btn-student-refresh");
+  refreshBtn.classList.add("spinning");
+  const isToday = date === todayISO();
+  document.getElementById("btn-back-today").style.display = isToday ? "none" : "inline-flex";
+  document.getElementById("student-edition-label").textContent = isToday ? "Today's Edition" : "Archive Viewer";
+  document.getElementById("student-date-headline").textContent = fmtDate(date);
+
+  const content = document.getElementById("student-content");
+  content.innerHTML = renderSkeletons(4);
+
+  try {
+    const d = await apiFetch({ action:"getAssembly", date });
+    if (!d.data) {
+      content.innerHTML = `
+        <div class="empty-state fade-in">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <h3>No data for this date</h3>
+          <p>Try selecting a different date from the archive.</p>
+        </div>`;
+      return;
+    }
+    let asm = d.data;
+    if (typeof asm.GK_Quiz === "string") {
+      try { asm.GK_Quiz = JSON.parse(asm.GK_Quiz); } catch { asm.GK_Quiz = []; }
+    }
+    studentCurrentData = asm;
+    content.innerHTML = renderAssemblyCards(asm);
+    attachQuizHandlers();
+  } catch(e) {
+    content.innerHTML = `
+      <div class="empty-state fade-in">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+        <h3>Failed to load</h3>
+        <p>Check your connection or API URL.</p>
+      </div>`;
+    toast("Failed to load assembly data.", "error");
+  } finally {
+    refreshBtn.classList.remove("spinning");
+  }
+}
+
+function renderSkeletons(n) {
+  return Array.from({length:n}, () => `
+    <div class="card skel-card" style="margin-bottom:12px;">
+      <div class="skeleton skel-h skel-s"></div>
+      <div class="skeleton skel-l"></div>
+      <div class="skeleton skel-l skel-m"></div>
+      <div class="skeleton skel-h skel-s"></div>
+    </div>`).join("");
+}
+
+function renderAssemblyCards(a) {
+  let html = "";
+  if (a.Quote) html += `
+    <div class="card card-gold fade-up d1" style="margin-bottom:12px;">
+      <div class="card-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
+        <span class="card-label">Quote of the Day</span>
+      </div>
+      <div class="card-body">
+        <blockquote class="quote-text">"${escHtml(a.Quote)}"</blockquote>
+        ${a.Author ? `<p class="quote-author">— ${escHtml(a.Author)}</p>` : ""}
+      </div>
+    </div>`;
+
+  if (a.Thought) html += `
+    <div class="card card-sage fade-up d2" style="margin-bottom:12px;">
+      <div class="card-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--sage)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span class="card-label">Thought for the Day</span>
+      </div>
+      <div class="card-body"><p class="thought-text">${escHtml(a.Thought)}</p></div>
+    </div>`;
+
+  if (a.News_Headlines) {
+    const lines = String(a.News_Headlines).split("\n").filter(Boolean);
+    const visible = lines.slice(0,3);
+    const extra   = lines.slice(3);
+    html += `
+    <div class="card card-crimson fade-up d3" style="margin-bottom:12px;">
+      <div class="card-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--crimson)" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+        <span class="card-label">News Headlines</span>
+      </div>
+      <div class="card-body">
+        <ul class="news-list" id="news-list">
+          ${visible.map(h=>`<li class="news-item"><span class="news-dot"></span>${escHtml(h)}</li>`).join("")}
+          ${extra.length ? extra.map(h=>`<li class="news-item" style="display:none">${`<span class="news-dot"></span>${escHtml(h)}`}</li>`).join("") : ""}
+        </ul>
+        ${extra.length ? `<button class="btn-more" id="btn-news-more" onclick="toggleNews()">▾ +${extra.length} more</button>` : ""}
+      </div>
+    </div>`;
+  }
+
+  if (a.Current_Affairs) html += `
+    <div class="card card-teal fade-up d4" style="margin-bottom:12px;">
+      <div class="card-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="card-label">Current Affairs</span>
+      </div>
+      <div class="card-body"><p class="affairs-text">${escHtml(a.Current_Affairs)}</p></div>
+    </div>`;
+
+  const quiz = a.GK_Quiz;
+  if (quiz && quiz.length) {
+    html += `
+    <div class="card card-ink fade-up d5" style="margin-bottom:12px;">
+      <div class="card-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span class="card-label">GK Quiz · ${quiz.length} Q</span>
+      </div>
+      <div class="card-body">
+        <div class="quiz-questions" id="quiz-container">
+          ${quiz.map((q,qi) => renderQuizQ(q,qi)).join("")}
+        </div>
+        <div id="quiz-score-wrap" style="display:none;"></div>
+      </div>
+    </div>`;
+  }
+  return html;
+}
+
+function renderQuizQ(q, qi) {
+  return `
+    <div id="quiz-q-${qi}">
+      <p class="quiz-q-num">Q${qi+1}</p>
+      <p class="quiz-q-text">${escHtml(q.question)}</p>
+      <div class="quiz-options">
+        ${(q.options||[]).map((opt,oi)=>`
+          <button class="quiz-opt" id="qopt-${qi}-${oi}" onclick="pickAnswer(${qi},${oi})">
+            <span class="quiz-opt-letter">${String.fromCharCode(65+oi)}.</span>
+            ${escHtml(opt)}
+          </button>`).join("")}
+      </div>
+      <div class="quiz-explanation" id="quiz-exp-${qi}" style="display:none;"></div>
+    </div>`;
+}
+
+function attachQuizHandlers() { /* handlers are inline */ }
+
+function pickAnswer(qi, oi) {
+  if (quizAnswers[qi] !== undefined) return;
+  quizAnswers[qi] = oi;
+  const quiz = studentCurrentData?.GK_Quiz || [];
+  const q = quiz[qi];
+  if (!q) return;
+
+  q.options.forEach((_,idx) => {
+    const btn = document.getElementById(`qopt-${qi}-${idx}`);
+    if (!btn) return;
+    btn.disabled = true;
+    if (idx === q.correct) btn.classList.add("correct");
+    else if (idx === oi)   btn.classList.add("wrong");
+  });
+
+  if (q.explanation) {
+    const expEl = document.getElementById(`quiz-exp-${qi}`);
+    if (expEl) { expEl.textContent = "💡 " + q.explanation; expEl.style.display = "block"; }
+  }
+
+  // check if all answered
+  if (Object.keys(quizAnswers).length === quiz.length) {
+    const score = Object.entries(quizAnswers).filter(([k,v]) => quiz[Number(k)].correct === v).length;
+    const wrap  = document.getElementById("quiz-score-wrap");
+    if (wrap) {
+      const msg = score === quiz.length ? "🌟 Perfect!" : score >= quiz.length/2 ? "👍 Good job!" : "📚 Keep learning!";
+      wrap.innerHTML = `
+        <div class="quiz-score fade-in">
+          <p class="quiz-score-num">Score: ${score} / ${quiz.length}</p>
+          <p class="quiz-score-msg">${msg}</p>
+        </div>`;
+      wrap.style.display = "block";
+    }
+  }
+}
+
+let newsExpanded = false;
+function toggleNews() {
+  newsExpanded = !newsExpanded;
+  document.querySelectorAll("#news-list li").forEach((li,i) => {
+    if (i >= 3) li.style.display = newsExpanded ? "flex" : "none";
+  });
+  const btn = document.getElementById("btn-news-more");
+  if (btn) btn.textContent = newsExpanded ? "▴ Show less" : `▾ +${document.querySelectorAll("#news-list li").length - 3} more`;
+}
+
+// ══════════════════════════════════════════════════
+//  ADMIN DASHBOARD
+// ══════════════════════════════════════════════════
+function initAdmin() {
+  showPage("page-admin");
+  const today = todayISO();
+  document.getElementById("admin-date-label").textContent = fmtDate(today);
+  document.getElementById("admin-user-label").innerHTML = `🛡️ ${currentUser.username}`;
+  document.getElementById("admin-date").value = today;
+  document.getElementById("admin-date").max   = today;
+  document.getElementById("admin-footer-year").textContent = new Date().getFullYear();
+  renderQuizBuilder();
+}
+
+function switchAdminTab(tab) {
+  ["entry","users"].forEach(t => {
+    document.getElementById("seg-"+t).classList.toggle("active", t===tab);
+    document.getElementById("panel-"+t).classList.toggle("active", t===tab);
+  });
+  if (tab === "users") loadUsers();
+}
+
+function toggleSection(header) {
+  const body    = header.nextElementSibling;
+  const chevron = header.querySelector(".chevron");
+  const collapsed = body.classList.toggle("collapsed");
+  chevron.style.transform = collapsed ? "rotate(180deg)" : "";
+}
+
+function adminDateChanged() {
+  adminEditMode = false;
+  document.getElementById("edit-badge").classList.remove("show");
+  document.getElementById("btn-submit-label").textContent = "Publish to Google Sheets";
+}
+
+async function adminCheckDate() {
+  const date = document.getElementById("admin-date").value;
+  if (!date) { toast("Select a date first.", "error"); return; }
+  const btn = document.getElementById("btn-date-check");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner spinner-dark"></span> Checking…';
+  try {
+    const d = await apiFetch({ action:"getAssembly", date });
+    if (d.data) {
+      let asm = d.data;
+      if (typeof asm.GK_Quiz === "string") { try { asm.GK_Quiz = JSON.parse(asm.GK_Quiz); } catch { asm.GK_Quiz=[]; } }
+      populateAdminForm(asm);
+      adminEditMode = true;
+      document.getElementById("edit-badge").classList.add("show");
+      document.getElementById("btn-submit-label").textContent = "Update Assembly Data";
+      toast("Existing record loaded for editing.", "info");
+    } else {
+      toast("No record for this date — form ready for new entry.", "info");
+      adminEditMode = false;
+      document.getElementById("edit-badge").classList.remove("show");
+    }
+  } catch(e) {
+    toast("Error checking date: " + e.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.18-5"/></svg> Check Date`;
+  }
+}
+
+function populateAdminForm(a) {
+  document.getElementById("admin-quote").value   = a.Quote || "";
+  document.getElementById("admin-author").value  = a.Author || "";
+  document.getElementById("admin-thought").value = a.Thought || "";
+  document.getElementById("admin-news").value    = a.News_Headlines || "";
+  document.getElementById("admin-affairs").value = a.Current_Affairs || "";
+  quizQuestions = (a.GK_Quiz && a.GK_Quiz.length)
+    ? a.GK_Quiz.map(q => ({ question:q.question||"", options:[...((q.options||[]).concat(["","","",""])).slice(0,4)], correct:q.correct||0, explanation:q.explanation||"" }))
+    : [{ question:"", options:["","","",""], correct:0, explanation:"" }];
+  renderQuizBuilder();
+}
+
+function renderQuizBuilder() {
+  const container = document.getElementById("quiz-builder");
+  container.innerHTML = quizQuestions.map((q,qi) => `
+    <div class="quiz-item" id="admin-q-${qi}">
+      <div class="quiz-item-header">
+        <span class="quiz-num">Q${qi+1}</span>
+        ${quizQuestions.length > 1 ? `<button class="btn-remove-q" onclick="removeAdminQ(${qi})" title="Remove">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        </button>` : ""}
+      </div>
+      <input class="admin-input" type="text" placeholder="Question text…"
+        value="${escAttr(q.question)}"
+        oninput="quizQuestions[${qi}].question=this.value"/>
+      <div class="quiz-opts-grid">
+        ${q.options.map((opt,oi) => `
+          <div class="quiz-opt-wrap">
+            <input type="radio" name="correct-${qi}" ${q.correct===oi?"checked":""}
+              onchange="quizQuestions[${qi}].correct=${oi}"/>
+            <input class="admin-input" type="text" placeholder="Option ${String.fromCharCode(65+oi)}"
+              value="${escAttr(opt)}"
+              oninput="quizQuestions[${qi}].options[${oi}]=this.value"/>
+          </div>`).join("")}
+      </div>
+      <input class="admin-input" type="text" placeholder="Explanation (optional)…"
+        value="${escAttr(q.explanation)}"
+        oninput="quizQuestions[${qi}].explanation=this.value"/>
+    </div>`).join("") + `
+    <button class="btn-add-q" onclick="addAdminQ()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Question
+    </button>`;
+  document.getElementById("quiz-count-badge").textContent = `(${quizQuestions.length} Q)`;
+}
+
+function addAdminQ() {
+  quizQuestions.push({ question:"", options:["","","",""], correct:0, explanation:"" });
+  renderQuizBuilder();
+}
+function removeAdminQ(i) {
+  quizQuestions.splice(i,1);
+  renderQuizBuilder();
+}
+
+async function adminSubmit() {
+  const errEl = document.getElementById("admin-form-error");
+  errEl.classList.remove("show");
+
+  const date    = document.getElementById("admin-date").value;
+  const quote   = document.getElementById("admin-quote").value.trim();
+  const thought = document.getElementById("admin-thought").value.trim();
+
+  if (!date || !quote || !thought) {
+    errEl.textContent = "Date, Quote, and Thought are required fields.";
+    errEl.classList.add("show");
+    return;
+  }
+
+  const btn = document.getElementById("btn-admin-submit");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Saving…';
+
+  const payload = {
+    action:           adminEditMode ? "updateAssembly" : "postAssembly",
+    Date:             date,
+    Quote:            quote,
+    Author:           document.getElementById("admin-author").value.trim(),
+    Thought:          thought,
+    News_Headlines:   document.getElementById("admin-news").value.trim(),
+    Current_Affairs:  document.getElementById("admin-affairs").value.trim(),
+    GK_Quiz:          JSON.stringify(quizQuestions),
+  };
+
+  try {
+    await apiPost(payload);
+    toast(adminEditMode ? "Assembly data updated!" : "Assembly data saved to Google Sheets!", "success");
+    if (!adminEditMode) {
+      document.getElementById("admin-quote").value   = "";
+      document.getElementById("admin-author").value  = "";
+      document.getElementById("admin-thought").value = "";
+      document.getElementById("admin-news").value    = "";
+      document.getElementById("admin-affairs").value = "";
+      quizQuestions = [{ question:"", options:["","","",""], correct:0, explanation:"" }];
+      renderQuizBuilder();
+    }
+  } catch(e) {
+    errEl.textContent = e.message || "Failed to save. Check connection.";
+    errEl.classList.add("show");
+    toast(e.message || "Failed to save data.", "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      <span id="btn-submit-label">${adminEditMode ? "Update Assembly Data" : "Publish to Google Sheets"}</span>`;
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  USER MANAGEMENT
+// ══════════════════════════════════════════════════
+async function loadUsers() {
+  const container = document.getElementById("user-list-container");
+  container.innerHTML = `<div style="display:flex;flex-direction:column;gap:8px;">${Array(3).fill(`<div class="skeleton" style="height:56px;border-radius:14px;"></div>`).join("")}</div>`;
+  try {
+    const d = await apiFetch({ action:"getUsers" });
+    const users = d.users || [];
+    if (!users.length) {
+      container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:12px;">No users registered yet.</div>`;
+      return;
+    }
+    container.innerHTML = `<div class="user-list">` + users.map(u => `
+      <div class="user-item fade-up" id="user-row-${escAttr(u.Username)}">
+        <div class="user-dot ${u.Active ? 'active' : 'inactive'}"></div>
+        <div class="user-info">
+          <p class="user-name">${escHtml(u.Username)}</p>
+          <div class="user-detail">
+            <span class="user-role" style="margin-right:4px;">${escHtml(u.Role)}</span>
+            ${u.Class   ? `<span class="user-chip">📚 Class ${escHtml(u.Class)}</span>` : ""}
+            ${u.RollNo  ? `<span class="user-chip">🎫 Roll ${escHtml(u.RollNo)}</span>` : ""}
+            ${u.Contact ? `<span class="user-chip">📞 ${escHtml(u.Contact)}</span>` : ""}
+          </div>
+        </div>
+        ${u.Role !== "Admin"
+          ? `<button class="btn-activate ${u.Active?'deactivate':'activate'}"
+               onclick="toggleUser('${escAttr(u.Username)}', ${u.Active})">
+               ${u.Active ? "Deactivate" : "Activate"}
+             </button>`
+          : `<span class="badge-admin">Admin</span>`}
+      </div>`).join("") + `</div>`;
+  } catch(e) {
+    container.innerHTML = `<div style="text-align:center;padding:30px;color:var(--crimson);font-size:13px;">Failed to load users.</div>`;
+    toast("Failed to load users.", "error");
+  }
+}
+
+async function toggleUser(username, currentActive) {
+  try {
+    await apiPost({ action:"toggleUser", username, active: !currentActive });
+    toast(`${username} ${!currentActive ? "activated" : "deactivated"}.`, "success");
+    loadUsers();
+  } catch(e) {
+    toast("Failed to update user: " + e.message, "error");
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════
+function escHtml(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+function escAttr(s) {
+  return String(s||"").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+
+// ══════════════════════════════════════════════════
+//  BOOT — restore session
+// ══════════════════════════════════════════════════
+(function boot() {
+  if (currentUser) {
+    if (currentUser.role === "Admin") initAdmin();
+    else initStudent();
+  }
+})();
+</script>
+</body>
+</html>
